@@ -35,7 +35,7 @@ const login = async (email: string, clearTextPassword: string) =>
     if (isValid) {
         return user;
     } else {
-        throw new Error("Invalid credentials provided");
+        throw new Error("Invalid credentials");
     }
 };
 

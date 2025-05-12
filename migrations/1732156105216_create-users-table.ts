@@ -7,6 +7,7 @@ export async function up(pgm: MigrationBuilder): Promise<void> {
         id: "id",
         username: {
             type: "varchar(50)",
+            unique: true,
             notNull: true,
         },
         email: {

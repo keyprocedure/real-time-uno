@@ -4,7 +4,14 @@ import {Users} from "../db";
 const router = express.Router();
 
 router.get("/register", (_request, response) => {
-    response.render("register", { title: "Auth: Register" });
+    // @ts-expect-error
+    const error = _request.session.error;
+    // @ts-expect-error
+    delete _request.session.error;
+    response.render("register", {
+        title: "Auth: Register",
+        error: error || null,
+    });
 });
 
 type RegisterRequest = Request<{
@@ -22,7 +29,7 @@ router.post("/register", async (request: RegisterRequest, response) => {
     const { username, email, password } = request.body;
 
     try {
-        // @ts-expect-error TODO fix this error for session
+        // @ts-expect-error
         request.session.user = await Users.create({ username, email, password });
 
         request.session.save((err) => {
@@ -32,14 +39,38 @@ router.post("/register", async (request: RegisterRequest, response) => {
             }
             response.redirect("/lobby");
         });
-    } catch (error) {
-        console.error(error);
-        response.redirect("register");
+    } catch (error: any) {
+        console.error("Registration error:", error);
+
+        let message = "Registration failed";
+
+        if (error.code === "23505") { // duplicate key
+            if (error.detail?.includes("username")) {
+                message = "Username already exists";
+            } else if (error.detail?.includes("email")) {
+                message = "Email already registered";
+            } else {
+                message = "Account already exists";
+            }
+        }
+
+        // @ts-expect-error
+        request.session.error = message;
+        request.session.save(() => {
+            response.redirect("/auth/register");
+        });
     }
 });
 
 router.get("/login", (_request, response) => {
-    response.render("login", { title: "Auth: Login"});
+    // @ts-expect-error
+    const error = _request.session.error;
+    // @ts-expect-error
+    delete _request.session.error;
+    response.render("login", {
+        title: "Auth: Login",
+        error: error || null
+    });
 });
 
 router.post("/login", async (request: LoginRequest, response) => {
@@ -58,7 +89,11 @@ router.post("/login", async (request: LoginRequest, response) => {
         });
     } catch (error) {
         console.error(error);
-        response.redirect("login");
+        // @ts-expect-error
+        request.session.error = "Invalid email or password";
+        request.session.save(() => {
+            response.redirect("/auth/login");
+        });
     }
 });
 

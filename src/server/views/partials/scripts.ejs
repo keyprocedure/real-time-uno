@@ -1,0 +1,55 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.js"></script>
+
+<script>
+    let activeToast;
+
+    function showToast(msg) {
+        if (activeToast) activeToast.hideToast();
+        activeToast = Toastify({
+            text: msg,
+            duration: 3000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#ff4d4f",
+            style: {
+                background: "linear-gradient(135deg, #ff4d4f, #ff6b6b)",
+                color: "#fff",
+                padding: "12px 20px",
+                borderRadius: "8px",
+                fontSize: "16px",
+                fontWeight: "500",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                marginTop: "80px"
+            }
+        });
+        activeToast.showToast();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector("form");
+        if (!form) return;
+
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+
+        form.addEventListener("submit", (e) => {
+            const email = emailInput?.value.trim();
+            const password = passwordInput?.value.trim();
+
+            if (!email || !password) {
+                e.preventDefault();
+                showToast("All fields are required");
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                e.preventDefault();
+                showToast("Enter a valid email address");
+            }
+        });
+    });
+
+    <% if (error && error.length > 0) { %>
+        showToast("<%= error %>");
+    <% } %>
+</script>
+
+
