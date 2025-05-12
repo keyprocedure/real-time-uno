@@ -24,7 +24,6 @@ LIMIT $1
 OFFSET $2;
 `;
 
-
 export const IS_USER_IN_GAME = `
 SELECT 1 FROM game_users
 WHERE game_id = $1 AND user_id = $2
@@ -40,7 +39,7 @@ GROUP BY g.id
 
 export const GET_USER_GAMES = `
 SELECT game_id FROM game_users WHERE user_id = $1
-`
+`;
 
 export const UPDATE_GAME_STATE = `
 UPDATE games

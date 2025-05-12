@@ -1,112 +1,113 @@
-import express, { Request } from "express"
-import {Users} from "../db";
+import express, { Request } from 'express';
+import { Users } from '../db';
 
 const router = express.Router();
 
-router.get("/register", (_request, response) => {
-    // @ts-expect-error
-    const error = _request.session.error;
-    // @ts-expect-error
-    delete _request.session.error;
-    response.render("register", {
-        title: "Auth: Register",
-        error: error || null,
-    });
+router.get('/register', (_request, response) => {
+  // @ts-expect-error
+  const error = _request.session.error;
+  // @ts-expect-error
+  delete _request.session.error;
+  response.render('register', {
+    title: 'Auth: Register',
+    error: error || null,
+  });
 });
 
 type RegisterRequest = Request<{
-    username: string;
-    email: string;
-    password: string;
+  username: string;
+  email: string;
+  password: string;
 }>;
 
 type LoginRequest = Request<{
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }>;
 
-router.post("/register", async (request: RegisterRequest, response) => {
-    const { username, email, password } = request.body;
+router.post('/register', async (request: RegisterRequest, response) => {
+  const { username, email, password } = request.body;
 
-    try {
-        // @ts-expect-error
-        request.session.user = await Users.create({ username, email, password });
-
-        request.session.save((err) => {
-            if (err) {
-                console.error("Session save error:", err);
-                return response.redirect("/auth/register");
-            }
-            response.redirect("/lobby");
-        });
-    } catch (error: any) {
-        console.error("Registration error:", error);
-
-        let message = "Registration failed";
-
-        if (error.code === "23505") { // duplicate key
-            if (error.detail?.includes("username")) {
-                message = "Username already exists";
-            } else if (error.detail?.includes("email")) {
-                message = "Email already registered";
-            } else {
-                message = "Account already exists";
-            }
-        }
-
-        // @ts-expect-error
-        request.session.error = message;
-        request.session.save(() => {
-            response.redirect("/auth/register");
-        });
-    }
-});
-
-router.get("/login", (_request, response) => {
+  try {
     // @ts-expect-error
-    const error = _request.session.error;
-    // @ts-expect-error
-    delete _request.session.error;
-    response.render("login", {
-        title: "Auth: Login",
-        error: error || null
+    request.session.user = await Users.create({ username, email, password });
+
+    request.session.save((err) => {
+      if (err) {
+        console.error('Session save error:', err);
+        return response.redirect('/auth/register');
+      }
+      response.redirect('/lobby');
     });
-});
+  } catch (error: any) {
+    console.error('Registration error:', error);
 
-router.post("/login", async (request: LoginRequest, response) => {
-    const { email, password } = request.body;
+    let message = 'Registration failed';
 
-    try {
-        // @ts-expect-error TODO fix this error for session
-        request.session.user = await Users.login({ email, password });
-
-        request.session.save((err) => {
-            if (err) {
-                console.error("Session save error:", err);
-                return response.redirect("/auth/login");
-            }
-            response.redirect("/lobby");
-        });
-    } catch (error) {
-        console.error(error);
-        // @ts-expect-error
-        request.session.error = "Invalid email or password";
-        request.session.save(() => {
-            response.redirect("/auth/login");
-        });
+    if (error.code === '23505') {
+      // duplicate key
+      if (error.detail?.includes('username')) {
+        message = 'Username already exists';
+      } else if (error.detail?.includes('email')) {
+        message = 'Email already registered';
+      } else {
+        message = 'Account already exists';
+      }
     }
+
+    // @ts-expect-error
+    request.session.error = message;
+    request.session.save(() => {
+      response.redirect('/auth/register');
+    });
+  }
 });
 
-router.get("/logout", async (request, response) => {
-    request.session.destroy((error) => {
-        if (error) {
-            console.error("Error destroying session:", error);
-            return response.redirect("/");
-        }
+router.get('/login', (_request, response) => {
+  // @ts-expect-error
+  const error = _request.session.error;
+  // @ts-expect-error
+  delete _request.session.error;
+  response.render('login', {
+    title: 'Auth: Login',
+    error: error || null,
+  });
+});
 
-        response.clearCookie("connect.sid")
-        response.redirect("/auth/login");
+router.post('/login', async (request: LoginRequest, response) => {
+  const { email, password } = request.body;
+
+  try {
+    // @ts-expect-error TODO fix this error for session
+    request.session.user = await Users.login({ email, password });
+
+    request.session.save((err) => {
+      if (err) {
+        console.error('Session save error:', err);
+        return response.redirect('/auth/login');
+      }
+      response.redirect('/lobby');
     });
+  } catch (error) {
+    console.error(error);
+    // @ts-expect-error
+    request.session.error = 'Invalid email or password';
+    request.session.save(() => {
+      response.redirect('/auth/login');
+    });
+  }
+});
+
+router.get('/logout', async (request, response) => {
+  request.session.destroy((error) => {
+    if (error) {
+      console.error('Error destroying session:', error);
+      return response.redirect('/');
+    }
+
+    response.clearCookie('connect.sid');
+    response.redirect('/auth/login');
+  });
 });
 
 export default router;
