@@ -8,7 +8,7 @@ router.post('/create', async (req, res) => {
   const { id: user_id } = req.session.user;
   const game = await Games.create(user_id);
 
-  req.app.get('io').emit('game-created', game);
+  req.app.get('io').emit('lobby-update');
   res.redirect(`/games/${game.id}`);
 });
 
