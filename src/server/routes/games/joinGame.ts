@@ -28,6 +28,12 @@ router.post('/join/:gameId', async (req, res) => {
 
     await Games.join(user_id, game_id);
 
+    const playerCount = await Games.getPlayerCount(game_id);
+    req.app.get('io').emit('lobby-update', {
+      gameId: game_id,
+      players: playerCount,
+    });
+
     const updatedState = await Games.getGameState(game_id);
     req.app.get('io').to(`game-${game_id}`).emit('game-state', updatedState);
 

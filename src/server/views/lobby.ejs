@@ -12,7 +12,7 @@
     <h1 class="text-2xl font-bold"><%= user.username %></h1>
 
     <div class="absolute left-1/2 transform -translate-x-1/2">
-        <p class="text-lg font-medium">Welcome to the UNO Lobby</p>
+        <p class="text-3xl font-bold">UNO Lobby</p>
     </div>
 
     <div class="flex space-x-4">
@@ -33,9 +33,9 @@
     <!-- Left Section (Games) -->
     <div class="col-span-2">
         <!-- New Game Button -->
-        <div class="flex mb-6">
-            <form method="post" action="/games/create" class="flex w-full">
-                <button class="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition w-full">
+        <div class="flex justify-center mb-6">
+            <form method="post" action="/games/create">
+                <button class="bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 transition w-64">
                     Create New Game
                 </button>
             </form>
@@ -51,21 +51,32 @@
             </tr>
             </thead>
             <tbody id="available-games-list">
-            <% locals.availableGames !== undefined && availableGames.forEach((room) => { %>
+            <% availableGames.forEach((room) => { %>
                 <tr id="game-row-<%= room.id %>" class="border-b last:border-b-0">
                     <td class="py-2 px-4">Game <%= room.id %></td>
                     <td class="py-2 px-4">(<%= room.players %> / <%= room.player_count %>)</td>
                     <td class="py-2 px-4 text-center">
-                        <form action="/games/join/<%= room.id %>" method="post">
-                            <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
-                                Join
+                        <% if (room.user_in_game) { %>
+                            <form action="/games/join/<%= room.id %>" method="post">
+                                <button class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition">
+                                    Rejoin
+                                </button>
+                            </form>
+                        <% } else if (room.players < room.player_count) { %>
+                            <form action="/games/join/<%= room.id %>" method="post">
+                                <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+                                    Join
+                                </button>
+                            </form>
+                        <% } else { %>
+                            <button class="bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed" disabled>
+                                Full
                             </button>
-                        </form>
+                        <% } %>
                     </td>
                 </tr>
             <% }); %>
             </tbody>
-
         </table>
     </div>
 
@@ -92,8 +103,10 @@
 </div>
 
 <%- include('./partials/footer.ejs') %>
+<%- include('./partials/scripts', { error }) %>
 
 <!-- JavaScript -->
+<script src="/socket.io/socket.io.js"></script>
 <script src="/js/lobby.js"></script>
 </body>
 </html>

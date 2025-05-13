@@ -14,14 +14,18 @@ username;
 `;
 
 export const AVAILABLE_GAMES = `
-SELECT * ,
-(SELECT COUNT(*) FROM game_users WHERE games.id = game_users.game_id) AS players FROM games WHERE status != 'finished' AND id IN (
-SELECT game_id
+SELECT
+games.*,
+(SELECT COUNT(*) FROM game_users WHERE game_users.game_id = games.id) AS players,
+EXISTS (
+SELECT 1
 FROM game_users
-GROUP BY game_id
-HAVING COUNT(*) < player_count )
-LIMIT $1
-OFFSET $2;
+WHERE game_users.game_id = games.id AND game_users.user_id = $3
+) AS user_in_game
+FROM games
+WHERE status != 'finished'
+ORDER BY created_at ASC
+LIMIT $1 OFFSET $2;
 `;
 
 export const IS_USER_IN_GAME = `
@@ -65,4 +69,8 @@ export const GET_USERNAME = `
 SELECT username 
 FROM users 
 WHERE id = $1;
+`;
+
+export const GET_PLAYER_COUNT = `
+  SELECT COUNT(*) FROM game_users WHERE game_id = $1;
 `;

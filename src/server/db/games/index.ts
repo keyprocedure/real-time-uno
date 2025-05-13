@@ -10,6 +10,7 @@ import {
   UPDATE_GAME_STATE,
   SET_GAME_FINISHED,
   GET_USERNAME,
+  GET_PLAYER_COUNT,
 } from './sql';
 import { GameState, Player } from '../../../types/games';
 
@@ -96,8 +97,8 @@ const join = async (playerId: number, gameId: number): Promise<GameDescription> 
   return game;
 };
 
-const availableGames = async (limit: number = 20, offset: number = 0) => {
-  return db.any(AVAILABLE_GAMES, [limit, offset]);
+const availableGames = async (userId: number, limit = 20, offset = 0) => {
+  return db.any(AVAILABLE_GAMES, [limit, offset, userId]);
 };
 
 const isUserInGame = async (userId: number, gameId: number): Promise<boolean> => {
@@ -141,6 +142,11 @@ const finishGame = async (gameId: number): Promise<void> => {
   await db.none(SET_GAME_FINISHED, [gameId]);
 };
 
+const getPlayerCount = async (gameId: number) => {
+  const result = await db.one(GET_PLAYER_COUNT, [gameId]);
+  return parseInt(result.count, 10);
+};
+
 export default {
   create,
   join,
@@ -151,4 +157,5 @@ export default {
   getGameState,
   updateGameState,
   finishGame,
+  getPlayerCount,
 };

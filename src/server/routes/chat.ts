@@ -14,13 +14,14 @@ router.post('/:roomId', checkAuthentication, chatMiddleware, (request, response)
   const { roomId } = request.params;
   const message = request.body.message;
   // @ts-expect-error
-  const { email, gravatar } = request.session.user;
+  const { email, gravatar, username } = request.session.user;
   const io = request.app.get('io');
 
   io.emit(`message:${roomId}`, {
     message,
     gravatar,
     sender: email,
+    username,
     timestamp: new Date(),
   });
 

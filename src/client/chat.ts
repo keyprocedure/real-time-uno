@@ -26,9 +26,14 @@ form.addEventListener('submit', (e) => {
 
 window.socket.on(
   `message:${window.roomId}`,
-  (payload: { message: string; sender: string; timestamp: string; gravatar: string }) => {
+  (payload: { message: string; sender: string; timestamp: string; gravatar: string; username: string }) => {
     const messageElement = messageTemplate.content.cloneNode(true) as HTMLElement;
     messageElement.querySelector('span')!.textContent = payload.message;
+    const span = messageElement.querySelector('span');
+
+    if (span) {
+      span.innerHTML = `<strong>${payload.username}</strong>: ${payload.message}`;
+    }
 
     document.querySelector('#chat-section ul')!.appendChild(messageElement);
   },
