@@ -34,7 +34,7 @@ const create = async (playerId: number): Promise<GameDescription> => {
   );
 
   if (firstCardIndex === -1) {
-    throw new Error('Deck does not have any non-wild cards.');
+    throw new Error('Deck does not have any non-wild cards');
   }
 
   const discardPile = [deck.splice(firstCardIndex, 1)[0]];
@@ -130,6 +130,7 @@ const getGameState = async (gameId: number): Promise<GameState> => {
     ...state,
     players,
     currentPlayerUsername: currentPlayer?.username,
+    currentPlayerId: currentPlayer?.id,
   } as GameState;
 };
 

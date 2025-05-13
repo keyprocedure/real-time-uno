@@ -4,10 +4,10 @@
 <script>
     let activeToast;
 
-    function showToast(msg) {
+    function showToast(message) {
         if (activeToast) activeToast.hideToast();
         activeToast = Toastify({
-            text: msg,
+            text: message,
             duration: 3000,
             gravity: "top",
             position: "center",

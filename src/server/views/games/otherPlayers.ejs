@@ -1,15 +1,25 @@
-<div>
-    <h2 class="font-bold">Other Players:</h2>
-    <div style="display: flex; justify-content: center; gap: 16px;">
-        <% for (let i = 0; i < gameState.players.length; i++) { %>
-            <% if (gameState.players[i].id !== currentPlayerId) { %>
-                <div>
-                    <p>
-                        <%= gameState.players[i].username %>
-                        (<%= gameState.players[i].hand.length %> cards)
-                    </p>
+<div class="my-6 text-center">
+    <p id="current-player" class="text-2xl font-bold mb-4">
+        <%= currentPlayerId === gameState.currentPlayerId
+                ? "It's your turn!"
+                : `It's ${gameState.currentPlayerUsername}'s turn` %>
+    </p>
+
+    <ul class="flex justify-center flex-wrap space-x-4 px-4">
+        <% gameState.players.forEach(player => { %>
+            <li class="flex-shrink-0 relative rounded-lg p-4 w-40 shadow hover:shadow-md transition bg-gray-50 border border-gray-200">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-700">
+                        <%= player.username.charAt(0).toUpperCase() %>
+                    </div>
+                    <div class="text-left">
+                        <h3 class="text-sm font-medium text-gray-900"><%= player.username %></h3>
+                        <p class="text-xs text-gray-500">
+                            <span id="player-hand-<%= player.id %>"><%= player.hand.length %></span> cards
+                        </p>
+                    </div>
                 </div>
-            <% } %>
-        <% } %>
-    </div>
+            </li>
+        <% }) %>
+    </ul>
 </div>

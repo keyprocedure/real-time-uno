@@ -6,8 +6,34 @@
 </script>
 
 <script src="/socket.io/socket.io.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 <script>
+    let activeToast;
+
+    function showToast(message) {
+        if (activeToast) activeToast.hideToast();
+        activeToast = Toastify({
+            text: message,
+            duration: 3000,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#ff4d4f",
+            style: {
+                background: "linear-gradient(135deg, #ff4d4f, #ff6b6b)",
+                color: "#fff",
+                padding: "12px 20px",
+                borderRadius: "8px",
+                fontSize: "16px",
+                fontWeight: "500",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                marginTop: "80px"
+            }
+        });
+        activeToast.showToast();
+    }
+
     document.getElementById("player-cards").addEventListener("click", (e) => {
         const cardElement = e.target.closest(".card");
         if (cardElement) {
@@ -17,7 +43,8 @@
             if (value === "wild" || value === "wild_draw4") {
                 const chosenColor = prompt("Choose a color (red, yellow, green, blue):");
                 if (!["red", "yellow", "green", "blue"].includes(chosenColor)) {
-                    alert("Invalid color. Please try again.");
+                    // alert("Invalid color. Please try again");
+                    showToast("Invalid color. Please try again");
                     return;
                 }
 
@@ -29,16 +56,18 @@
                     .then(response => response.json())
                     .then(data => {
                         if (!data.success) {
-                            console.error("Invalid card play:", data.message);
-                            alert(data.message || "Invalid card play.");
+                            // console.error("Invalid card play:", data.message);
+                            // alert(data.message || "Invalid card play");
+                            showToast(data.message || "Invalid card play");
                         } else {
                             console.log("Card played successfully.");
                             cardElement.remove();
                         }
                     })
                     .catch(error => {
-                        console.error("Error playing card:", error);
-                        alert("An error occurred while playing the card.");
+                        // console.error("Error playing card:", error);
+                        // alert("An error occurred while playing the card");
+                        showToast("An error occurred while playing the card");
                     });
                 return;
             }
@@ -51,15 +80,17 @@
                 .then(response => response.json())
                 .then(data => {
                     if (!data.success) {
-                        console.error("Invalid card play:", data.message);
-                        alert(data.message || "Invalid card play.");
+                        // console.error("Invalid card play:", data.message);
+                        // alert(data.message || "Invalid card play");
+                        showToast(data.message || "Invalid card play");
                     } else {
                         cardElement.remove();
                     }
                 })
                 .catch(error => {
-                    console.error("Error playing card:", error);
-                    alert("An error occurred while playing the card.");
+                    // console.error("Error playing card:", error);
+                    // alert("An error occurred while playing the card");
+                    showToast("An error occurred while playing the card");
                 });
         }
     });
@@ -75,8 +106,9 @@
                 if (data.success) {
                     console.log("Card drawn successfully!");
                 } else {
-                    console.error(data.message || "Failed to draw card.");
-                    alert(data.message || "Failed to draw card.");
+                    showToast(data.message || "Failed to draw card");
+                    // console.error(data.message || "Failed to draw card.");
+                    // alert(data.message || "Failed to draw card");
                 }
             });
     });
@@ -106,6 +138,7 @@
     socket.on("error", (data) => {
         console.error("Received error event:", data);
         if (data.playerId === currentPlayerId) {
+            showToast(data.message);
             const cardElement = document.querySelector(
                 `.card[data-color="${data.card.color}"][data-value="${data.card.value}"]`
             );
@@ -121,20 +154,31 @@
         updatePlayerCards(updatedState);
         updateOtherPlayers(updatedState);
         updateTopCard(updatedState);
-        updateCurrentPlayer(updatedState.players[updatedState.currentTurn].username);
+        updateCurrentPlayer({
+            playerId: updatedState.players[updatedState.currentTurn].id,
+            currentPlayerUsername: updatedState.players[updatedState.currentTurn].username
+        });
     });
 
     socket.on("turn-updated", (data) => {
         console.log("Turn updated:", data);
-        updateCurrentPlayer(data.currentPlayerUsername);
+        updateCurrentPlayer(data);
     });
 
-    function updateCurrentPlayer(currentPlayerUsername) {
+    function updateCurrentPlayer(data) {
         const currentPlayerElement = document.getElementById("current-player");
-        if (currentPlayerElement) {
-            currentPlayerElement.textContent = `It's ${currentPlayerUsername}'s turn!`;
+
+        if (!currentPlayerElement) return;
+
+        if (!data || !("playerId" in data)) {
+            console.error("Invalid data passed to updateCurrentPlayer:", data);
+            return;
+        }
+
+        if (data.playerId === currentPlayerId) {
+            currentPlayerElement.textContent = "It's your turn!";
         } else {
-            console.error('Element with id "current-player" not found.');
+            currentPlayerElement.textContent = `It's ${data.currentPlayerUsername}'s turn!`;
         }
     }
 
@@ -154,35 +198,38 @@
                 cardElement.className = `card ${card.color || "wild"}`;
                 cardElement.dataset.color = card.color || "null";
                 cardElement.dataset.value = card.value;
-
                 cardElement.textContent = cardText;
-
                 playerCardsContainer.appendChild(cardElement);
             });
+            const handCountElement = document.getElementById(`player-hand-${currentPlayerId}`);
+            if (handCountElement) {
+                handCountElement.textContent = `${currentPlayer.hand.length}`;
+            }
         } else {
             playerCardsContainer.innerHTML = "<p>No cards available</p>";
         }
     }
 
     function updateOtherPlayers(gameState) {
-        const otherPlayersContainer = document.querySelector("div > h2 + div");
-        otherPlayersContainer.innerHTML = "";
-
         gameState.players.forEach(player => {
             if (player.id !== currentPlayerId) {
-                const playerElement = document.createElement("div");
-                playerElement.innerHTML = `<p>${player.username} (${player.hand.length} cards)</p>`;
-                otherPlayersContainer.appendChild(playerElement);
+                const handCountSpan = document.getElementById(`player-hand-${player.id}`);
+                if (handCountSpan) {
+                    handCountSpan.textContent = player.hand.length;
+                }
             }
         });
     }
 
     function updateTopCard(gameState) {
         const topCardContainer = document.getElementById("top-card");
+        if (!topCardContainer) {
+            console.error("Top card container not found.");
+            return;
+        }
 
         if (gameState.discardPile.length > 0) {
             const topCard = gameState.discardPile[gameState.discardPile.length - 1];
-
             const cardText = topCard.value.includes("wild")
                 ? `Wild ${topCard.value === "wild_draw4" ? "Draw 4" : ""}`
                 : `${topCard.color} ${topCard.value}`;

@@ -18,8 +18,8 @@ router.post(
       const currentPlayer = state.players[state.currentTurn];
 
       if (currentPlayer.id !== playerId) {
-        req.app.get('io').to(`game-${gameId}`).emit('error', { message: 'Not your turn.' });
-        res.status(400).json({ success: false, message: 'Not your turn.' });
+        req.app.get('io').to(`game-${gameId}`).emit('error', { message: 'It\'s not your turn' });
+        res.status(400).json({ success: false, message: 'It\'s not your turn' });
         return;
       }
 
@@ -42,8 +42,8 @@ router.post(
         req.app
           .get('io')
           .to(`game-${gameId}`)
-          .emit('error', { message: 'Deck is empty even after reshuffling!' });
-        res.status(400).json({ success: false, message: 'Deck is empty even after reshuffling!' });
+          .emit('error', { message: 'Deck is empty' });
+        res.status(400).json({ success: false, message: 'Deck is empty' });
         return;
       }
 
@@ -66,8 +66,8 @@ router.post(
       res.status(200).json({ success: true, card });
     } catch (error) {
       console.error('Error drawing card:', error);
-      req.app.get('io').to(`game-${gameId}`).emit('error', { message: 'Failed to draw card.' });
-      res.status(500).json({ success: false, message: 'Failed to draw card.' });
+      req.app.get('io').to(`game-${gameId}`).emit('error', { message: 'Failed to draw card' });
+      res.status(500).json({ success: false, message: 'Failed to draw card' });
     }
   },
 );
