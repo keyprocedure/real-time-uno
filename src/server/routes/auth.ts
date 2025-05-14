@@ -1,3 +1,4 @@
+import rateLimit from 'express-rate-limit';
 import express, { Request } from 'express';
 import { Users } from '../db';
 
@@ -25,7 +26,13 @@ type LoginRequest = Request<{
   password: string;
 }>;
 
-router.post('/register', async (request: RegisterRequest, response) => {
+const createAccountLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 5,
+  message: 'Too many accounts created from this IP',
+});
+
+router.post('/register', createAccountLimiter, async (request: RegisterRequest, response) => {
   const { username, email, password } = request.body;
 
   try {
