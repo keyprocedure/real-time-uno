@@ -15,7 +15,7 @@ import checkAuthentication from './middleware/check-authentication';
 
 const app = express();
 const server = createServer(app);
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || '8080', 10);
 
 app.use(morgan('dev'));
 app.use(express.json());
