@@ -26,7 +26,13 @@ form.addEventListener('submit', (e) => {
 
 window.socket.on(
   `message:${window.roomId}`,
-  (payload: { message: string; sender: string; timestamp: string; gravatar: string; username: string }) => {
+  (payload: {
+    message: string;
+    sender: string;
+    timestamp: string;
+    gravatar: string;
+    username: string;
+  }) => {
     const messageElement = messageTemplate.content.cloneNode(true) as HTMLElement;
     messageElement.querySelector('span')!.textContent = payload.message;
     const span = messageElement.querySelector('span');

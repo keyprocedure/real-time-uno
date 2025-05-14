@@ -3,11 +3,11 @@ import { GameState, Card } from '../../../types/games';
 export const applyCardEffects = (state: GameState, card: Card): boolean => {
   const skipToNext = () => {
     state.currentTurn =
-        (state.currentTurn + state.direction + state.players.length) % state.players.length;
+      (state.currentTurn + state.direction + state.players.length) % state.players.length;
   };
 
   const nextPlayerIndex =
-      (state.currentTurn + state.direction + state.players.length) % state.players.length;
+    (state.currentTurn + state.direction + state.players.length) % state.players.length;
   const nextPlayer = state.players[nextPlayerIndex];
 
   if (card.value === 'skip') {
@@ -27,14 +27,14 @@ export const applyCardEffects = (state: GameState, card: Card): boolean => {
   if (card.value === 'draw2') {
     nextPlayer.hand.push(...state.deck.splice(-1));
     state.currentTurn =
-        (nextPlayerIndex + state.direction + state.players.length) % state.players.length;
+      (nextPlayerIndex + state.direction + state.players.length) % state.players.length;
     return true;
   }
 
   if (card.value === 'wild_draw4') {
     nextPlayer.hand.push(...state.deck.splice(-2));
     state.currentTurn =
-        (nextPlayerIndex + state.direction + state.players.length) % state.players.length;
+      (nextPlayerIndex + state.direction + state.players.length) % state.players.length;
     state.chosenColor = card.color;
   }
 

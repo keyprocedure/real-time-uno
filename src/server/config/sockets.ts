@@ -52,8 +52,7 @@ export default function (
 
     io.on('connection', async (socket) => {
       await bindSession(socket);
-      socket.on('disconnect', () => {
-      });
+      socket.on('disconnect', () => {});
     });
   }
 

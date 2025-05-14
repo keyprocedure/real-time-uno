@@ -18,8 +18,8 @@ router.post(
       const currentPlayer = state.players[state.currentTurn];
 
       if (currentPlayer.id !== playerId) {
-        req.app.get('io').to(`game-${gameId}`).emit('error', { message: 'It\'s not your turn' });
-        res.status(400).json({ success: false, message: 'It\'s not your turn' });
+        req.app.get('io').to(`game-${gameId}`).emit('error', { message: "It's not your turn" });
+        res.status(400).json({ success: false, message: "It's not your turn" });
         return;
       }
 
@@ -39,10 +39,7 @@ router.post(
 
       const card = state.deck.pop();
       if (!card) {
-        req.app
-          .get('io')
-          .to(`game-${gameId}`)
-          .emit('error', { message: 'Deck is empty' });
+        req.app.get('io').to(`game-${gameId}`).emit('error', { message: 'Deck is empty' });
         res.status(400).json({ success: false, message: 'Deck is empty' });
         return;
       }

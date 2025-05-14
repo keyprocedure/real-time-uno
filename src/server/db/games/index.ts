@@ -97,7 +97,7 @@ const join = async (playerId: number, gameId: number): Promise<GameDescription> 
   return game;
 };
 
-const availableGames = async (userId: number, limit = 20, offset = 0) => {
+const availableGames = async (userId: number, limit = 100, offset = 0) => {
   return db.any(AVAILABLE_GAMES, [limit, offset, userId]);
 };
 

@@ -49,5 +49,4 @@ app.use((_request, _response, next) => {
   next(httpErrors(404, 'Page Not Found'));
 });
 
-server.listen(PORT, () => {
-});
+server.listen(PORT, () => {});

@@ -16,7 +16,7 @@ router.get('/', checkAuthentication, chatMiddleware, async (_request, response) 
   else if (errorCode === 'game-not-found') error = 'Game not found';
   else if (errorCode === 'unknown-error') error = 'An unknown error occurred';
 
-  response.render('lobby', {title: 'Game Lobby', user, roomId, availableGames, error});
+  response.render('lobby', { title: 'Game Lobby', user, roomId, availableGames, error });
 });
 
 router.get('/available-games', checkAuthentication, async (req, res) => {
