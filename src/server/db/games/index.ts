@@ -71,7 +71,7 @@ const shuffleDeck = (): Array<{ color: string | null; value: string }> => {
   });
 
   specials.forEach((value) => {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 2; i++) {
       deck.push({ color: null, value });
     }
   });

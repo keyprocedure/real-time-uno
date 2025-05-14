@@ -213,13 +213,12 @@
 
         if (gameState.discardPile.length > 0) {
             const topCard = gameState.discardPile[gameState.discardPile.length - 1];
-            const cardText = topCard.value.includes("wild")
-                ? `Wild ${topCard.value === "wild_draw4" ? "Draw 4" : ""}`
-                : `${topCard.color} ${topCard.value}`;
-            topCardContainer.className = `card ${topCard.color || "wild"}`;
+            const colorClass = topCard.color || "wild";
+            const cardText = `${topCard.color} ${topCard.value}`;
+            topCardContainer.className = `card ${colorClass} mb-4`;
             topCardContainer.textContent = cardText;
         } else {
-            topCardContainer.className = "card";
+            topCardContainer.className = "card mb-4";
             topCardContainer.textContent = "No Cards";
         }
     }
