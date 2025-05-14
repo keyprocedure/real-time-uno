@@ -1,17 +1,16 @@
 import type { Express } from 'express';
-import livereload from 'livereload';
 
 export default (app: Express, staticPath: string) => {
   if (process.env.NODE_ENV === 'development') {
-    const reloadServer = livereload.createServer();
+    const livereload = require('livereload');
     const connectLiveReload = require('connect-livereload');
 
+    const reloadServer = livereload.createServer();
     reloadServer.watch(staticPath);
     reloadServer.server.once('connection', () => {
-      setTimeout(() => {
-        reloadServer.refresh('/');
-      }, 100);
+      setTimeout(() => reloadServer.refresh('/'), 100);
     });
+
     app.use(connectLiveReload());
   }
 };
