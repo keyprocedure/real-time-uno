@@ -1,8 +1,6 @@
 <script>
     const gameId = <%- JSON.stringify(gameId) %>;
-    console.log("gameId: ", gameId);
     const currentPlayerId = <%- JSON.stringify(currentPlayerId) %>;
-    console.log("currentPlayerId: ", currentPlayerId);
 </script>
 
 <script src="/socket.io/socket.io.js"></script>
@@ -28,68 +26,60 @@
                 fontSize: "16px",
                 fontWeight: "500",
                 boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                marginTop: "80px"
+                marginTop: "60px"
             }
         });
         activeToast.showToast();
     }
 
-    document.getElementById("player-cards").addEventListener("click", (e) => {
+    document.getElementById("player-cards").addEventListener("click", async (e) => {
         const cardElement = e.target.closest(".card");
         if (cardElement) {
             const color = cardElement.dataset.color;
             const value = cardElement.dataset.value;
 
             if (value === "wild" || value === "wild_draw4") {
-                const chosenColor = prompt("Choose a color (red, yellow, green, blue):");
+                const chosenColor = await showColorPicker();
+
                 if (!["red", "yellow", "green", "blue"].includes(chosenColor)) {
-                    // alert("Invalid color. Please try again");
                     showToast("Invalid color. Please try again");
                     return;
                 }
 
                 fetch(`/games/${gameId}/play-card`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ playerId: currentPlayerId, card: { color: chosenColor, value } })
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({playerId: currentPlayerId, card: {color: chosenColor, value}})
                 })
                     .then(response => response.json())
                     .then(data => {
                         if (!data.success) {
-                            // console.error("Invalid card play:", data.message);
-                            // alert(data.message || "Invalid card play");
                             showToast(data.message || "Invalid card play");
                         } else {
-                            console.log("Card played successfully.");
                             cardElement.remove();
                         }
                     })
-                    .catch(error => {
-                        // console.error("Error playing card:", error);
-                        // alert("An error occurred while playing the card");
+                    .catch(() => {
                         showToast("An error occurred while playing the card");
                     });
+
                 return;
             }
 
             fetch(`/games/${gameId}/play-card`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ playerId: currentPlayerId, card: { color, value } })
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({playerId: currentPlayerId, card: {color, value}})
             })
                 .then(response => response.json())
                 .then(data => {
                     if (!data.success) {
-                        // console.error("Invalid card play:", data.message);
-                        // alert(data.message || "Invalid card play");
                         showToast(data.message || "Invalid card play");
                     } else {
                         cardElement.remove();
                     }
                 })
                 .catch(error => {
-                    // console.error("Error playing card:", error);
-                    // alert("An error occurred while playing the card");
                     showToast("An error occurred while playing the card");
                 });
         }
@@ -104,11 +94,8 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    console.log("Card drawn successfully!");
                 } else {
                     showToast(data.message || "Failed to draw card");
-                    // console.error(data.message || "Failed to draw card.");
-                    // alert(data.message || "Failed to draw card");
                 }
             });
     });
@@ -118,8 +105,6 @@
     socket.emit("join-game", gameId);
 
     socket.on("game-over", (data) => {
-        console.log("Game-over event received:", data);
-
         const notification = document.createElement("div");
         notification.className = "absolute top-16 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-center px-6 py-3 rounded shadow-lg";
         notification.innerHTML = `
@@ -150,7 +135,6 @@
     });
 
     socket.on("game-state", (updatedState) => {
-        console.log("Received updated game state:", updatedState);
         updatePlayerCards(updatedState);
         updateOtherPlayers(updatedState);
         updateTopCard(updatedState);
@@ -161,7 +145,6 @@
     });
 
     socket.on("turn-updated", (data) => {
-        console.log("Turn updated:", data);
         updateCurrentPlayer(data);
     });
 
@@ -239,5 +222,21 @@
             topCardContainer.className = "card";
             topCardContainer.textContent = "No Cards";
         }
+    }
+
+    function showColorPicker() {
+        return new Promise((resolve) => {
+            const modal = document.getElementById("color-picker-modal");
+            modal.classList.remove("hidden");
+
+            const buttons = modal.querySelectorAll(".color-btn");
+            buttons.forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    const color = btn.getAttribute("data-color");
+                    modal.classList.add("hidden");
+                    resolve(color);
+                });
+            });
+        });
     }
 </script>

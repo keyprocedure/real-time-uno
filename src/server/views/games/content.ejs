@@ -12,5 +12,16 @@
     </div>
 </div>
 
+<div id="color-picker-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+        <h2 class="text-lg font-semibold mb-4">Choose a color</h2>
+        <div class="flex justify-center space-x-4">
+            <button class="color-btn red card" data-color="red">Red</button>
+            <button class="color-btn yellow card" data-color="yellow">Yellow</button>
+            <button class="color-btn green card" data-color="green">Green</button>
+            <button class="color-btn blue card" data-color="blue">Blue</button>
+        </div>
+    </div>
+</div>
 
 <%- include('./scripts', { gameId, currentPlayerId }) %>

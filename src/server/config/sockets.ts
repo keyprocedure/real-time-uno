@@ -9,6 +9,16 @@ const bindSession = async (socket: Socket) => {
   const { request } = socket;
 
   // @ts-ignore
+  const session = request.session;
+
+  // @ts-ignore
+  if (!session || !session.user || !session.user.id) {
+    console.warn('Socket connection rejected: no valid session');
+    socket.disconnect();
+    return;
+  }
+
+  // @ts-ignore
   socket.join(request.session.id);
 
   // @ts-ignore
@@ -20,7 +30,7 @@ const bindSession = async (socket: Socket) => {
 
   socket.use((_, next) => {
     // @ts-ignore
-    request.session.reload((error) => {
+    session.reload((error) => {
       if (error) {
         socket.disconnect();
       } else {
@@ -42,13 +52,7 @@ export default function (
 
     io.on('connection', async (socket) => {
       await bindSession(socket);
-
-      // @ts-ignore
-      console.log(`client connected (${socket.request.session.id})`);
-
       socket.on('disconnect', () => {
-        // @ts-ignore
-        console.log(`client disconnected (${socket.request.session.id})`);
       });
     });
   }

@@ -1,12 +1,14 @@
-<aside id="chat-section" class="border border-gray-300 rounded p-4 bg-white text-left">
+<aside id="chat-section" class="w-full max-w-md mx-auto border border-gray-300 rounded p-4 bg-white text-left">
     <h2 class="text-2xl font-bold text-center mb-4">Chat</h2>
+
     <template id="chat-message-template">
-        <li class="chat-message rounded p-2 mb-1 bg-gray-100">
+        <li class="chat-message flex flex-col bg-white border border-gray-200 rounded-lg px-4 py-2 shadow-sm">
             <span class="content text-gray-800"></span>
         </li>
     </template>
 
-    <ul id="messages" class="space-y-0 p-4 max-h-64 overflow-auto bg-gray-50 rounded">
+    <ul id="messages" class="space-y-3 p-3 max-h-64 overflow-auto bg-gray-50 rounded-lg border border-gray-200">
+        <!-- dynamic messages -->
     </ul>
 
     <form action="/chat/<%= roomId %>" method="post" class="mt-4 flex items-center space-x-2">
@@ -14,7 +16,10 @@
                 id="chat-message"
                 autocomplete="off"
                 class="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Type a message..."
         />
-        <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Send</button>
+        <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+            Send
+        </button>
     </form>
 </aside>

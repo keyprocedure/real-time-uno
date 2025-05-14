@@ -1,15 +1,13 @@
-<div>
-    <h2 class="mt-16 text-xl font-semibold text-gray-800 mb-4">Your Cards</h2>
-    <div id="player-cards">
-        <% const currentPlayer = gameState.players.find(player => player.id === currentPlayerId); %>
-        <% if (currentPlayer) { %>
-            <% currentPlayer.hand.forEach(card => { %>
-                <div class="card <%= card.color %>" data-color="<%= card.color %>" data-value="<%= card.value %>">
-                    <%= card.color %> <%= card.value %>
-                </div>
-            <% }) %>
-        <% } else { %>
-            <p>No cards available</p>
-        <% } %>
-    </div>
+<h2 class="mt-16 text-xl font-semibold text-gray-800 mb-4">Your Cards</h2>
+<div id="player-cards" class="card-grid">
+    <% const currentPlayer = gameState.players.find(player => player.id === currentPlayerId); %>
+    <% if (currentPlayer) { %>
+        <% currentPlayer.hand.forEach(card => { %>
+            <div class="card <%= card.color %>" data-color="<%= card.color %>" data-value="<%= card.value %>">
+                <%= card.color %><br><%= card.value.includes('_') ? card.value.replace(/_/g, ' ') : card.value %>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p>No cards available</p>
+    <% } %>
 </div>

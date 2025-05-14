@@ -5,14 +5,33 @@ body {
 }
 
 .card {
-  display: inline-block;
-  padding: 8px 16px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 85px;
+  height: 60px;
   margin: 4px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-family: Arial, sans-serif;
   font-weight: bold;
+  font-size: 16px;
+  text-transform: capitalize;
   cursor: pointer;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  line-height: 1.2;
+  text-align: center;
+  white-space: normal;
 }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 90px);
+  gap: 4px;
+  justify-content: center;
+}
+
 
 .red {
   background-color: #ffcccc;
@@ -37,4 +56,24 @@ body {
 .wild {
   background-color: #ddd;
   color: #000;
+}
+
+.draw-button {
+  display: block;
+  margin: 16px auto;
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #0d5dc3;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.draw-button:hover {
+  background-color: #364dc6;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
