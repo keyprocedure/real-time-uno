@@ -2,7 +2,7 @@ import { GameState } from '../../../types/games';
 
 export const advanceTurn = (state: GameState): number => {
   if (!state.players || state.players.length === 0) {
-    throw new Error('Cannot advance turn: No players in the game state.');
+    throw new Error('Cannot advance turn: No players in the game state');
   }
 
   if (state.currentTurn < 0 || state.currentTurn >= state.players.length) {
