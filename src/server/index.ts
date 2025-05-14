@@ -49,4 +49,7 @@ app.use((_request, _response, next) => {
   next(httpErrors(404, 'Page Not Found'));
 });
 
-server.listen(PORT, () => {});
+// @ts-ignore
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server listening on port ${PORT}`);
+});
