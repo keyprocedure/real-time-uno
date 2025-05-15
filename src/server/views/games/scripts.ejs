@@ -11,7 +11,6 @@
     let activeToast;
 
     function showToast(message) {
-        if (activeToast) activeToast.hideToast();
         activeToast = Toastify({
             text: message,
             duration: 3000,
