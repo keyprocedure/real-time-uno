@@ -28,11 +28,11 @@ router.post(
 
       if (!validateCardPlay(state, card)) {
         req.app.get('io').to(`game-${gameId}`).emit('error', {
-          message: 'Invalid card play',
+          message: 'Card doesn\'t match color or number',
           playerId,
           card,
         });
-        res.status(400).json({ success: false, message: 'Invalid card play' });
+        res.status(400).json({ success: false, message: 'Card doesn\'t match color or number' });
         return;
       }
 

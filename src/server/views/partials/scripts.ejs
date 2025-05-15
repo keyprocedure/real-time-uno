@@ -5,14 +5,14 @@
     let activeToast;
 
     function showToast(message) {
+        if (activeToast) activeToast.hideToast();
         activeToast = Toastify({
             text: message,
             duration: 3000,
             gravity: "top",
             position: "center",
-            backgroundColor: "#ff4d4f",
             style: {
-                background: "linear-gradient(135deg, #ff4d4f, #ff6b6b)",
+                background: "#ff4d4f",
                 color: "#fff",
                 padding: "12px 20px",
                 borderRadius: "8px",
