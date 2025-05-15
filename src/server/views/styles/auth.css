@@ -1,7 +1,7 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
-  background-color: #f4f4f4;
+  background: linear-gradient(135deg, #f4f7fb, #e8eff8);
   padding: 120px 50px 50px;
 }
 
@@ -11,6 +11,11 @@ input {
   width: calc(100% - 22px);
   border: 1px solid #ddd;
   border-radius: 3px;
+}
+
+input:focus {
+  border-color: #007bff;
+  outline: none;
 }
 
 button {
@@ -41,15 +46,20 @@ a:hover {
 }
 
 h1 {
-  margin-bottom: 20px;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 24px;
 }
 
 form {
+  max-width: 240px;
+  width: 100%;
+  margin: auto;
+  padding: 24px;
+  border: 1px solid #007bff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   background: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: inline-block;
+  border-radius: 8px;
 }
 
 .form-group {
@@ -62,6 +72,11 @@ form {
   margin-bottom: 0;
   font-size: 14px;
   color: #555;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 0.875rem;
 }
 
 .form-group input {

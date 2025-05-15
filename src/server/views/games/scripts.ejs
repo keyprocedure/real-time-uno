@@ -67,7 +67,6 @@
         }
     });
 
-
     document.getElementById("draw-card-btn").addEventListener("click", () => {
         fetch(`/games/${gameId}/draw-card`, {
             method: "POST",
@@ -105,8 +104,13 @@
 
     socket.on("error", (data) => {
         console.error("Received error event:", data);
-        if (data.playerId === currentPlayerId) {
+        if (!data || !data.message) return;
+
+        if (!data.playerId || data.playerId === currentPlayerId) {
             showToast(data.message);
+        }
+
+        if (data.card) {
             const cardElement = document.querySelector(
                 `.card[data-color="${data.card.color}"][data-value="${data.card.value}"]`
             );
