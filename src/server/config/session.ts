@@ -17,7 +17,9 @@ export default (app: Express): RequestHandler => {
         createTableIfMissing: true,
         conObject: {
           connectionString: process.env.DATABASE_URL,
-          ssl: { rejectUnauthorized: false },
+          ...(process.env.NODE_ENV === 'production' && {
+            ssl: { rejectUnauthorized: false },
+          }),
         },
       }),
       secret: process.env.SESSION_SECRET!,
