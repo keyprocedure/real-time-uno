@@ -23,6 +23,10 @@ app.use(express.urlencoded({ extended: false }));
 
 config.session(app);
 
+app.get('/health', (_req, res) => {
+  res.send('Server is running');
+});
+
 app.get('/', (req, res) => {
   res.redirect('/lobby');
 });
