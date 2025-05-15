@@ -49,10 +49,8 @@ app.use((_request, _response, next) => {
   next(httpErrors(404, 'Page Not Found'));
 });
 
-if (process.env.NODE_ENV !== 'production') {
-  server.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-  });
-}
+server.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
 
 export default server;
