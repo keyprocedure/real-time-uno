@@ -174,9 +174,17 @@
         if (currentPlayer) {
             currentPlayer.hand.forEach(card => {
                 const cardElement = document.createElement("div");
-                const cardText = card.value.includes("wild")
-                    ? `Wild ${card.value === "wild_draw4" ? "Draw 4" : ""}`
-                    : `${card.color} ${card.value}`;
+
+                let cardText;
+                if (card.value === "wild_draw4") {
+                    cardText = "Wild Draw 4";
+                } else if (card.value === "wild") {
+                    cardText = "Wild";
+                } else if (card.value === "draw2") {
+                    cardText = `${card.color} Draw 2`;
+                } else {
+                    cardText = `${card.color} ${card.value}`;
+                }
 
                 cardElement.className = `card ${card.color || "wild"}`;
                 cardElement.dataset.color = card.color || "null";
@@ -214,9 +222,20 @@
         if (gameState.discardPile.length > 0) {
             const topCard = gameState.discardPile[gameState.discardPile.length - 1];
             const colorClass = topCard.color || "wild";
-            const cardText = `${topCard.color} ${topCard.value}`;
+
+            let cardText;
+            if (topCard.value === "wild_draw4") {
+                cardText = "Wild Draw 4";
+            } else if (topCard.value === "wild") {
+                cardText = "Wild";
+            } else if (topCard.value === "draw2") {
+                cardText = "Draw 2";
+            } else {
+                cardText = topCard.value;
+            }
+
             topCardContainer.className = `card ${colorClass} mb-4`;
-            topCardContainer.textContent = cardText;
+            topCardContainer.innerHTML = `${topCard.color}<br>${cardText}`;
         } else {
             topCardContainer.className = "card mb-4";
             topCardContainer.textContent = "No Cards";

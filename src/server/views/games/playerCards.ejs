@@ -4,10 +4,17 @@
     <% if (currentPlayer) { %>
         <% currentPlayer.hand.forEach(card => { %>
             <%
-                const isWild = card.value.includes('wild');
-                const displayText = isWild
-                        ? `Wild${card.value === 'wild_draw4' ? ' Draw 4' : ''}`
-                        : `${card.color} ${card.value}`;
+                let displayText;
+                if (card.value === 'wild_draw4') {
+                    displayText = 'Wild Draw 4';
+                } else if (card.value === 'wild') {
+                    displayText = 'Wild';
+                } else if (card.value === 'draw2') {
+                    displayText = `${card.color} Draw 2`;
+                } else {
+                    displayText = `${card.color} ${card.value}`;
+                }
+
                 const colorClass = card.color || 'wild';
             %>
             <div class="card <%= colorClass %>" data-color="<%= colorClass %>" data-value="<%= card.value %>">
