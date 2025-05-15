@@ -15,7 +15,10 @@ export default (app: Express): RequestHandler => {
     sessionMiddleware = session({
       store: new (connectPgSimple(session))({
         createTableIfMissing: true,
-        conString: process.env.DATABASE_URL,
+        conObject: {
+          connectionString: process.env.DATABASE_URL,
+          ssl: { rejectUnauthorized: false },
+        },
       }),
       secret: process.env.SESSION_SECRET!,
       resave: false,
