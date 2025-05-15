@@ -14,7 +14,7 @@ const config: webpack.Configuration = {
   },
   mode,
   output: {
-    path: path.join(process.cwd(), 'src', 'public', 'js'),
+    path: path.join(process.cwd(), 'dist', 'public', 'js'),
     filename: '[name].js',
   },
   module: {
@@ -25,6 +25,9 @@ const config: webpack.Configuration = {
         exclude: /node_modules/,
       },
     ],
+  },
+  resolve: {
+    extensions: ['.ts', '.js'],
   },
 };
 

@@ -49,7 +49,10 @@ app.use((_request, _response, next) => {
   next(httpErrors(404, 'Page Not Found'));
 });
 
-// @ts-ignore
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  server.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  });
+}
+
+export default server;
