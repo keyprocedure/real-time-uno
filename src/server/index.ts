@@ -32,7 +32,7 @@ app.use('/games', checkAuthentication, routes.games);
 app.use('/chat', checkAuthentication, routes.chat);
 app.use('/styles', express.static(path.join(__dirname, 'views', 'styles')));
 
-const staticPath = path.join(process.cwd(), 'src', 'public');
+const staticPath = path.join(__dirname, '..', 'public');
 app.use(express.static(staticPath));
 
 config.livereload(app, staticPath);
@@ -40,7 +40,7 @@ const sessionMiddleware = config.session(app);
 config.configureSocketIO(server, app, sessionMiddleware);
 
 app.use(cookieParser());
-app.set('views', path.join(process.cwd(), 'src', 'server', 'views'));
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(middleware.chat);
