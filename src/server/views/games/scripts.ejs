@@ -40,9 +40,13 @@
             });
 
             const data = await response.json();
-            if (data.success) {
-                cardElement.remove();
+
+            if (!response.ok || !data.success) {
+                showToast(data.message || "Failed to play card");
+                return;
             }
+
+            cardElement.remove();
         } catch {
             showToast("An error occurred while playing the card");
         }
@@ -103,7 +107,6 @@
     });
 
     socket.on("error", (data) => {
-        console.error("Received error event:", data);
         if (!data || !data.message) return;
 
         if (!data.playerId || data.playerId === currentPlayerId) {

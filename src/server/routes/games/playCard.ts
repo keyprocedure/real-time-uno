@@ -21,17 +21,11 @@ router.post(
       const currentPlayer = state.players[state.currentTurn];
 
       if (currentPlayer.id !== playerId) {
-        req.app.get('io').to(`game-${gameId}`).emit('error', { message: "It's not your turn" });
         res.status(400).json({ success: false, message: "It's not your turn" });
         return;
       }
 
       if (!validateCardPlay(state, card)) {
-        req.app.get('io').to(`game-${gameId}`).emit('error', {
-          message: 'Card doesn\'t match color or number',
-          playerId,
-          card,
-        });
         res.status(400).json({ success: false, message: 'Card doesn\'t match color or number' });
         return;
       }
@@ -40,11 +34,6 @@ router.post(
         (card.value === 'wild' || card.value === 'wild_draw4') &&
         (!card.color || card.color === 'null')
       ) {
-        req.app.get('io').to(`game-${gameId}`).emit('error', {
-          message: 'You must choose a color for the wild card',
-          playerId,
-          card,
-        });
         res
           .status(400)
           .json({ success: false, message: 'You must choose a color for the wild card' });
@@ -97,7 +86,6 @@ router.post(
 
       res.status(200).json({ success: true, card });
     } catch (error) {
-      req.app.get('io').to(`game-${gameId}`).emit('error', { message: 'Failed to play card.' });
       res.status(500).json({ success: false, message: 'Failed to play card.' });
     }
   },
