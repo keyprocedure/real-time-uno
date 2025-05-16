@@ -1,6 +1,8 @@
 # Online Multiplayer UNO
 
-Play UNO with friends in real time at [playuno.io](https://www.playuno.io) - a full-stack multiplayer game built with Node.js, Socket.io, Tailwind CSS, and PostgreSQL.
+<h1 align="center"><a href="https://www.playuno.io" target="_blank">Play Now - playuno.io</a></h1>
+
+Play UNO with friends in real time - a full-stack multiplayer game built with Node.js, Socket.io, Tailwind CSS, and PostgreSQL.
 
 ### Demo
 <img src="./demo/uno-demo.gif" alt="UNO Gameplay Demo" width="600"/>
