@@ -13,25 +13,19 @@ router.post(
     req: Request<{ gameId: string }, {}, { playerId: number; card: Card }>,
     res: Response,
   ): Promise<void> => {
-
     const { gameId } = req.params;
     const { playerId, card } = req.body;
-    console.time(`play-card-${gameId}`);
+
     try {
-      console.time("getGameState");
       const state = await Games.getGameState(parseInt(gameId, 10));
-      console.timeEnd("getGameState");
       const currentPlayer = state.players[state.currentTurn];
 
       if (currentPlayer.id !== playerId) {
         res.status(400).json({ success: false, message: "It's not your turn" });
         return;
       }
-      console.time("validateCardPlay");
-      const isValid = validateCardPlay(state, card);
-      console.timeEnd("validateCardPlay");
 
-      if (!isValid) {
+      if (!validateCardPlay(state, card)) {
         res.status(400).json({ success: false, message: 'Card doesn\'t match color or number' });
         return;
       }
@@ -46,9 +40,8 @@ router.post(
         return;
       }
 
-      console.time("applyCardEffects");
       const turnWasAdvanced = applyCardEffects(state, card);
-      console.timeEnd("applyCardEffects");
+
       req.app
         .get('io')
         .to(`game-${gameId}`)
@@ -81,9 +74,7 @@ router.post(
         advanceTurn(state);
       }
 
-      console.time("updateGameState");
       const updatedState = await Games.updateGameState(parseInt(gameId, 10), state);
-      console.timeEnd("updateGameState");
 
       req.app.get('io').to(`game-${gameId}`).emit('turn-updated', {
         currentTurn: state.currentTurn,
@@ -97,7 +88,6 @@ router.post(
     } catch (error) {
       res.status(500).json({ success: false, message: 'Failed to play card.' });
     }
-    console.timeEnd(`play-card-${gameId}`);
   },
 );
 
