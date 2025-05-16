@@ -12,9 +12,12 @@ router.post(
   ): Promise<void> => {
     const { gameId } = req.params;
     const { playerId } = req.body;
+    console.time(`draw-card-${gameId}`);
 
     try {
+      console.time("getGameState");
       const state = await Games.getGameState(parseInt(gameId, 10));
+      console.timeEnd("getGameState");
       const currentPlayer = state.players[state.currentTurn];
 
       if (currentPlayer.id !== playerId) {
@@ -43,8 +46,10 @@ router.post(
 
       currentPlayer.hand.push(card);
       advanceTurn(state);
+      console.log("Payload size (bytes):", JSON.stringify(state).length);
+      console.time("updateGameState");
       const updatedState = await Games.updateGameState(parseInt(gameId, 10), state);
-
+      console.timeEnd("updateGameState");
       req.app.get('io').to(`game-${gameId}`).emit('turn-updated', {
         currentTurn: state.currentTurn,
         playerId: state.players[state.currentTurn].id,
@@ -62,6 +67,7 @@ router.post(
       console.error('Error drawing card:', error);
       res.status(500).json({ success: false, message: 'Failed to draw card' });
     }
+    console.timeEnd(`draw-card-${gameId}`);
   },
 );
 

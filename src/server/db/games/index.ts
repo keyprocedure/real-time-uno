@@ -115,7 +115,9 @@ const getUserGameRooms = async (userId: number) => {
 };
 
 const getGameState = async (gameId: number): Promise<GameState> => {
+  console.time(`getGameState-${gameId}`);
   const rows = await db.any(FETCH_GAME_STATE, [gameId]);
+  console.timeEnd(`getGameState-${gameId}`);
   const { state } = rows[0];
 
   const players = rows.map((row) => ({
@@ -135,7 +137,9 @@ const getGameState = async (gameId: number): Promise<GameState> => {
 };
 
 const updateGameState = async (gameId: number, state: object): Promise<object> => {
+  console.time(`updateGameState-${gameId}`);
   const { state: updatedState } = await db.one(UPDATE_GAME_STATE, [gameId, state]);
+  console.timeEnd(`updateGameState-${gameId}`);
   return updatedState;
 };
 
