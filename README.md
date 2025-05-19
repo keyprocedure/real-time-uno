@@ -1,7 +1,6 @@
+<h1 align="center"><a href="https://www.playuno.io" target="_blank">playuno.io</a></h1>
+
 # Online Multiplayer UNO
-
-<h1 align="center"><a href="https://www.playuno.io" target="_blank">Play Now - playuno.io</a></h1>
-
 Play UNO with friends in real time - a full-stack multiplayer game built with Node.js, Socket.io, Tailwind CSS, and PostgreSQL.
 
 ### Demo
@@ -50,3 +49,7 @@ Play UNO with friends in real time - a full-stack multiplayer game built with No
    npm start
    ```
 6. Open [http://localhost:8080](http://localhost:8080) and start playing!
+   
+## Contributors
+- **Zuby Afzal** — Lead developer, backend, game logic, database, frontend
+- **Rajesh Panta** — UI, lobby design
